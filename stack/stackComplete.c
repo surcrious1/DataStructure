@@ -1,93 +1,115 @@
 #include <stdio.h>
 #include <malloc.h>
 
-struct stack
+struct Item
 {
-    int* item;
-    int size;
-    int maxsize;
+    int val;
+    struct Item* next;
 };
 
-struct stack* new_stack()
+struct Stack
 {
-    // make new stack
-    struct stack * new_s = (struct stack*)malloc(sizeof(struct stack));
+    struct Item* top;
+    int size;
+};
+
+struct Item* new_item(int val)
+{
+    // make new item
+    struct Item* item = (struct Item*)malloc(sizeof(struct Item)); 
     // initializing
-    new_s->item = (int*)malloc(sizeof(int));
-    new_s->size = 0;
-    new_s->maxsize = 1;
-    // return stack 
-    return new_s;
+    item -> val = val;
+    item -> next = NULL;
+    //return item
+    return item;
 }
 
-int size(struct stack* s)
+struct Stack* new_stack()
+{
+    // make new stack
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    // initializing
+    stack->size = 0;
+    stack->top = NULL;
+    // return stack 
+    return stack;
+}
+
+int size(struct Stack* s)
 {
     // return stack size
     return s->size;
 }
 
-int empty(struct stack* s)
+int empty(struct Stack* s)
 {
     // if stack is empty return 1 else return 0
-    if(size(s) == 0)
+    return s->size == 0;
+}
+
+int top(struct Stack* s)
+{
+    // return top of stack 
+    if(empty(s))
     {
-        return 1;
-    }
+        return -1;
+    } 
     else
     {
-        return 0;
-    }
+        return s->top->val;
+    } 
 }
 
-int full(struct stack* s)
-{
-    if(s->size == s->maxsize)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-int top(struct stack* s)
-{
-    // return top of stack
-    return s->item[s->size-1]; 
-}
-
-void push(struct stack* s, int val)
+void push(struct Stack* s, int val)
 {
     // push to stack 
-    // if stack is full, than expand the size with realloc
-    if(full(s))
+    if(empty(s))
     {
-        realloc(s->item,sizeof(int) * s->maxsize*2);
-        s->maxsize = s->maxsize*2;
+        s->top = new_item(val);
+        s->size++;
     }
-    s->item[s->size ++] = val;
+    else
+    {
+        struct Item* tmp = s->top;
+        s->top = new_item(val);
+        s->top->next = tmp;
+        s->size++;
+    }
 }
 
-int pop(struct stack* s)
+int pop(struct Stack* s)
 {
     // pop and return the value of stack
-    int top_item = top(s);
-    s->size--;
-    return top_item;
+    if(empty(s))
+    {
+        return -1;
+    }
+    else
+    {
+        struct Item* tmp = s->top;
+        int ret_val = tmp->val;
+        s->top = s->top->next;
+        free(tmp);
+        s->size--;
+        return ret_val;
+    }
 }
 
 int main()
 {
-    struct stack* s = new_stack();
+    struct Stack* s = new_stack();
     int i,n = 5;
+    printf("Size, Pushed item\n");
     for(i=0; i<n; i++)
     {
-        push(s,i);
-        printf("%d\n", top(s));
+        push(s,i*10);
+        printf("%4d, %11d\n",size(s), top(s));
     }
-    printf("%d\n", pop(s));
-    printf("%d\n", size(s));
-    
+    printf("Size,  Poped item\n");
+    while(!empty(s))
+    {
+        printf("%4d, %11d\n", size(s), pop(s));
+    }
+
     return 0;
 }

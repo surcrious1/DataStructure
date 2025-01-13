@@ -1,14 +1,29 @@
 #include <stdio.h>
 #include <malloc.h>
 
-struct stack
+struct Item
 {
-    int* item;
-    int size;
-    int maxsize;
+    int val;
+    struct Item* next;
 };
 
-struct stack* new_stack()
+struct Stack
+{
+    struct Item* top;
+    int size;
+};
+
+struct Item* new_item(int val)
+{
+    // make new item
+
+    // initializing
+
+    //return item
+
+}
+
+struct Stack* new_stack()
 {
     // make new stack
 
@@ -18,50 +33,51 @@ struct stack* new_stack()
 
 }
 
-int size(struct stack* s)
+int size(struct Stack* s)
 {
     // return stack size
-    return s->size;
+
 }
 
-int empty(struct stack* s)
+int empty(struct Stack* s)
 {
     // if stack is empty return 1 else return 0
+
 }
 
-int full(struct stack* s)
+int top(struct Stack* s)
 {
+    // return top of stack 
     
 }
 
-int top(struct stack* s)
-{
-    // return top of stack 
-}
-
-void push(struct stack* s, int val)
+void push(struct Stack* s, int val)
 {
     // push to stack 
-    // if stack is full, than expand the size with realloc
+    
 }
 
-int pop(struct stack* s)
+int pop(struct Stack* s)
 {
     // pop and return the value of stack
-
+    
 }
 
 int main()
 {
-    struct stack* s = new_stack();
+    struct Stack* s = new_stack();
     int i,n = 5;
+    printf("Size, Pushed item\n");
     for(i=0; i<n; i++)
     {
-        push(s,i);
-        printf("%d\n", top(s));
+        push(s,i*10);
+        printf("%4d, %11d\n",size(s), top(s));
     }
-    printf("%d\n", pop(s));
-    printf("%d\n", size(s));
+    printf("Size,  Poped item\n");
+    while(!empty(s))
+    {
+        printf("%4d, %11d\n", size(s), pop(s));
+    }
 
     return 0;
 }
